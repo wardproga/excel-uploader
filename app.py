@@ -17,17 +17,17 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
         file_name = uploaded_file.name
 
-        with st.expander(f"📂 {file_name} - اضغط للعرض"):
+        with st.expander(f"📂 اضغط لعرض: {file_name}"):
             try:
                 # إعادة المؤشر لبداية الملف
                 uploaded_file.seek(0)
 
-                # قراءة الملف كاملاً بدون تجاهل أي صف أو عمود
-                df = pd.read_excel(uploaded_file, header=None)
+                # قراءة كل الصفوف دون تحديد رؤوس
+                df = pd.read_excel(uploaded_file, header=None, dtype=str)
 
-                # عرض المحتوى كاملًا
+                # عرض الملف بالكامل كما هو
                 st.markdown(f"### 🧾 محتوى: {file_name}")
-                st.dataframe(df)
+                st.dataframe(df, use_container_width=True)
 
             except Exception as e:
-                st.error(f"❌ خطأ أثناء قراءة الملف: {e}")
+                st.error(f"❌ فشل في قراءة الملف {file_name}: {e}")
