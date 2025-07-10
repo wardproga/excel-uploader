@@ -17,15 +17,18 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
         file_name = uploaded_file.name
 
-        with st.expander(f"📂 اضغط لعرض: {file_name}"):
+        with st.expander(f"📂 {file_name} :اضغط لعرض"):
             try:
-                # إعادة المؤشر لبداية الملف
                 uploaded_file.seek(0)
 
-                # قراءة كل الصفوف دون تحديد رؤوس
-                df = pd.read_excel(uploaded_file, header=None, dtype=str)
+                # الحصول على أسماء الأوراق
+                excel_file = pd.ExcelFile(uploaded_file)
+                sheet_names = excel_file.sheet_names
 
-                # عرض الملف بالكامل كما هو
+                # عرض اسم الورقة الأولى وقراءتها
+                first_sheet = sheet_names[0]
+                df = pd.read_excel(excel_file, sheet_name=first_sheet, header=None, dtype=str)
+
                 st.markdown(f"### 🧾 محتوى: {file_name}")
                 st.dataframe(df, use_container_width=True)
 
