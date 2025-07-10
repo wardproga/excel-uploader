@@ -20,17 +20,19 @@ if uploaded_files:
         with st.expander(f"📂 {file_name} :اضغط لعرض"):
             try:
                 uploaded_file.seek(0)
-
-                # الحصول على أسماء الأوراق
                 excel_file = pd.ExcelFile(uploaded_file)
-                sheet_names = excel_file.sheet_names
-
-                # عرض اسم الورقة الأولى وقراءتها
-                first_sheet = sheet_names[0]
+                first_sheet = excel_file.sheet_names[0]
                 df = pd.read_excel(excel_file, sheet_name=first_sheet, header=None, dtype=str)
 
                 st.markdown(f"### 🧾 محتوى: {file_name}")
-                st.dataframe(df, use_container_width=True)
+
+                # إضافة خيار للعرض الكامل
+                preview = st.toggle("👁️ عرض كل الصفوف", key=file_name)
+
+                if preview:
+                    st.dataframe(df, use_container_width=True, height=len(df) * 35)
+                else:
+                    st.dataframe(df.head(10), use_container_width=True, height=400)
 
             except Exception as e:
                 st.error(f"❌ فشل في قراءة الملف {file_name}: {e}")
