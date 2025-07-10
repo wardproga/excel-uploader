@@ -1,10 +1,10 @@
 import streamlit as st
-import pandas as pd
+import os
 
 # إعداد الصفحة
 st.set_page_config(page_title="رفع فواتير Excel", layout="centered")
 
-# تخصيص CSS للتجاوب مع الهواتف
+# CSS لتجاوب الهاتف وتحسين المظهر
 st.markdown("""
     <style>
         @media screen and (max-width: 768px) {
@@ -12,19 +12,12 @@ st.markdown("""
                 padding: 1rem !important;
             }
         }
-        .css-1y4p8pa {
-            border: 2px dashed #4a90e2;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #f7fafd;
-        }
-        @media screen and (max-width: 480px) {
-            h1, .stTitle {
-                font-size: 1.5rem;
-            }
-            .stFileUploader {
-                font-size: 0.9rem;
-            }
+        .uploaded-file-box {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -32,10 +25,22 @@ st.markdown("""
 # العنوان
 st.title("📄 رفع فواتير Excel")
 
-# رفع ملفات
-uploaded_files = st.file_uploader("اختر ملفات Excel", type=["xlsx", "xls"], accept_multiple_files=True)
+# مربع رفع الملفات
+uploaded_files = st.file_uploader(
+    "اختر ملفات Excel",
+    type=["xlsx", "xls"],
+    accept_multiple_files=True
+)
 
+# عرض أسماء الملفات المرفوعة
 if uploaded_files:
-    st.subheader("📁 الملفات المرفوعة:")
+    st.markdown("### ✅ الملفات المرفوعة:")
     for file in uploaded_files:
-        st.write(f"✅ {file.name}")
+        file_name = file.name
+        file_ext = os.path.splitext(file_name)[1]
+        st.markdown(f"""
+            <div class="uploaded-file-box">
+                📂 <strong>{file_name}</strong> <br>
+                🧾 الامتداد: <code>{file_ext}</code>
+            </div>
+        """, unsafe_allow_html=True)
