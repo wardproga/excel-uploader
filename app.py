@@ -1,36 +1,30 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # إعداد الصفحة
-st.set_page_config(page_title="عرض ملفات Excel", layout="centered")
+st.set_page_config(page_title="رفع فواتير Excel", layout="centered")
 
 st.title("📄 رفع فواتير Excel")
+st.markdown("### اختر ملفات Excel")
 
+# رفع الملفات
 uploaded_files = st.file_uploader(
-    "اختر ملفات Excel",
+    "Drag and drop files here",
     type=["xlsx", "xls"],
-    accept_multiple_files=True
+    accept_multiple_files=True,
+    label_visibility="collapsed"
 )
 
-# تخزين في session_state
-if 'uploaded_data' not in st.session_state:
-    st.session_state.uploaded_data = {}
-
-# عرض الأزرار لأسماء الملفات
+# تخزين الملفات المؤقتة
 if uploaded_files:
+    st.markdown("### 📁 الملفات المرفوعة:")
     for file in uploaded_files:
-        file_name = file.name
-
-        # إنشاء زر باسم الملف
-        if st.button(f"📂 {file_name}"):
+        # عرض اسم الملف كزر قابل للنقر
+        if st.button(f"📂 {file.name}"):
             try:
-                # قراءة الملف
                 df = pd.read_excel(file)
-                st.session_state.uploaded_data[file_name] = df
-
-                # فتح نافذة منبثقة لعرض البيانات
-                with st.modal(f"📄 محتويات الملف: {file_name}"):
-                    st.dataframe(df, use_container_width=True)
-                    st.caption("اضغط خارج النافذة للإغلاق.")
+                with st.expander(f"📊 محتوى الملف: {file.name}", expanded=True):
+                    st.dataframe(df)
             except Exception as e:
-                st.error(f"❌ فشل في قراءة الملف {file_name}: {e}")
+                st.error(f"❌ فشل في قراءة الملف {file.name}:\n{str(e)}")
